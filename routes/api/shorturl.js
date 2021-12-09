@@ -2,17 +2,10 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser')
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
-var fsPromises = require('fs/promises');
-var random = require(process.cwd() + '/src/generateRandomNum');
-const songList = './data/song-list.json';
 var { getRandomSong, isValidUrl } = require(process.cwd() + '/src/generateRandomSong');
 
 let originalUrl;
 let randomSong;
-
-router.get('/', async (req, res, next) => {
-    res.send(await getRandomSong());
-})
 
 router.post('/', urlencodedParser, async (req, res, next) => {
     originalUrl = req.body.url;
