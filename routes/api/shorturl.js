@@ -2,24 +2,30 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser')
 var urlencodedParser = bodyParser.urlencoded({ extended: true })
-var fs = require('fs');
+var fsPromises = require('fs/promises');
 var random = require(process.cwd() + '/src/generateRandomNum');
+const songList = './data/song-list.json';
 
-// todo: fix generateRandomNum
-// choose a random song name
-// assign it to the incoming URL
 // actually make it go the the URL
 
-var songList = fs.readFileSync('./data/song-list.json', 'utf-8', (err, data) => {
-    return JSON.parse(data)["list"];
+async function getRandomSong() {
+    let songList = await getSongList();
+    let index = random.generateRandomInRange(songList.length, 0);
+    return String(songList[index]).toLocaleLowerCase();
+}
+
+async function getSongList() {
+    let promise = fsPromises.readFile(songList, 'utf-8');
+    let data = await promise;
+    return JSON.parse(data);
+} 
+
+router.get('/', async (req, res, next) => {
+    res.send(await getRandomSong());
 })
 
-router.post('/', urlencodedParser, (req, res, next) => {
-    res.json({url: req.body.url, json: songList});
-})
-
-router.get('/', (req, res, next) => {
-    res.send(songList);
+router.post('/', urlencodedParser, async (req, res, next) => {
+    res.send({url: req.body.url, json: await getRandomSong()});
 })
 
 module.exports = router;
