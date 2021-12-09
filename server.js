@@ -1,7 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+var mongoose = require('mongoose');
 require('dotenv').config();
+
+async function connectDb() {
+  try {
+    await mongoose.connect(process.env.MONGO_STRING);
+    console.log('mongoDB connected');
+  } catch (error) {
+    console.error('mongoDB couldnt connect', error);
+  }
+}
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -16,11 +26,9 @@ app.get('/', function(req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-// Your first API endpoint
-app.get('/api/hello', function(req, res) {
-  res.json({ greeting: 'hello API' });
-});
-
-app.listen(port, function() {
-  console.log(`Listening on port ${port}`);
+connectDb()
+.then(() => {
+  app.listen(port, function() {
+    console.log(`Listening on port ${port}`);
+  });
 });
