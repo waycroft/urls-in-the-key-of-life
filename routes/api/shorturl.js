@@ -19,14 +19,8 @@ router.post('/', urlencodedParser, async (req, res, next) => {
 
     randomSong = await getRandomSong();
 
-    let newRedirect = new Redirect({
-        _id: randomSong,
-        original_url: originalUrl,
-    });
-    newRedirect.save()
-    .then(() => {
-        console.log('new Redirect saved with _id:', randomSong);
-    });
+    let updateOp = await Redirect.updateOne({_id: randomSong}, {original_url: originalUrl}, {upsert:true});
+    console.log(updateOp);
 
     res.send({original_url: req.body.url, short_url: randomSong});
 })
