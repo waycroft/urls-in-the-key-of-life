@@ -5,30 +5,10 @@ var urlencodedParser = bodyParser.urlencoded({ extended: true })
 var fsPromises = require('fs/promises');
 var random = require(process.cwd() + '/src/generateRandomNum');
 const songList = './data/song-list.json';
+var { getRandomSong, isValidUrl } = require(process.cwd() + '/src/generateRandomSong');
 
 let originalUrl;
 let randomSong;
-
-// actually make it go the the URL
-
-async function getRandomSong() {
-    let songList = await getSongList();
-    let index = random.generateRandomInRange(songList.length, 0);
-
-    return String(songList[index]).toLocaleLowerCase();
-}
-
-async function getSongList() {
-    let promise = fsPromises.readFile(songList, 'utf-8');
-    let data = await promise;
-    return JSON.parse(data);
-} 
-
-function isValidUrl(string) {
-    let match = string.match(/https?:\/\/[A-Za-z]+\.[A-Za-z]+/g);
-    console.log(match);
-    return !!match;
-}
 
 router.get('/', async (req, res, next) => {
     res.send(await getRandomSong());
