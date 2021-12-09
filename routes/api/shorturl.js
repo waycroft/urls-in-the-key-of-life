@@ -7,6 +7,8 @@ var { getRandomSong, isValidUrl } = require(process.cwd() + '/src/generateRandom
 let originalUrl;
 let randomSong;
 
+var Redirect = require(process.cwd() + '/data/models/redirects');
+
 router.post('/', urlencodedParser, async (req, res, next) => {
     originalUrl = req.body.url;
 
@@ -16,11 +18,18 @@ router.post('/', urlencodedParser, async (req, res, next) => {
     };
 
     randomSong = await getRandomSong();
+
+    let newRedirect = new Redirect({
+        _id: randomSong,
+        original_url: originalUrl,
+    });
+    newRedirect.save();
+
     res.send({original_url: req.body.url, short_url: randomSong});
 })
 
 router.get('/songName', (req, res, next) => {
-    if (!randomSong) throw 'no url generated';
+    let songName = req.params.songName;
     res.redirect(originalUrl);
 })
 
