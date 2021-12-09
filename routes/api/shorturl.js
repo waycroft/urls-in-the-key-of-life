@@ -7,7 +7,7 @@ var { getRandomSong, isValidUrl } = require(process.cwd() + '/src/generateRandom
 let originalUrl;
 let randomSong;
 
-var Redirect = require(process.cwd() + '/data/models/redirects');
+var {Redirect} = require(process.cwd() + '/data/models/redirects');
 
 router.post('/', urlencodedParser, async (req, res, next) => {
     originalUrl = req.body.url;
@@ -23,7 +23,10 @@ router.post('/', urlencodedParser, async (req, res, next) => {
         _id: randomSong,
         original_url: originalUrl,
     });
-    newRedirect.save();
+    newRedirect.save()
+    .then(() => {
+        console.log('new Redirect saved with _id:', randomSong);
+    });
 
     res.send({original_url: req.body.url, short_url: randomSong});
 })
