@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var dns = require('dns');
 var bodyParser = require('body-parser')
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 var { getRandomSong } = require(process.cwd() + '/src/generateRandomSong');
@@ -11,7 +12,7 @@ var { Redirect } = require(process.cwd() + '/data/models/redirects');
 
 router.post('/', urlencodedParser, async (req, res, next) => {
     originalUrl = req.body.url;
-    console.log(originalUrl);
+    console.log('input URL:', originalUrl);
 
     try {
         if (!isValidUrl(originalUrl)) {
@@ -32,10 +33,11 @@ router.post('/', urlencodedParser, async (req, res, next) => {
 })
 
 router.get('/:shortUrl', async (req, res, next) => {
-    console.log(req.originalUrl);
+    console.log('original url:', req.originalUrl);
     let songName = req.params.shortUrl;
-    console.log(songName);
+  
     let doc = await Redirect.findById(songName).lean();
+  
     res.redirect(doc.original_url);
 })
 
