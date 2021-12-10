@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser')
 var urlencodedParser = bodyParser.urlencoded({extended: false})
-var { isValidUrl } = require(process.cwd() + '/src/generateRandomSong');
-var { generateRandomInRange } = require(process.cwd() + '/src/generateRandomNum');
+var { isValidUrl, getRandomSong } = require(process.cwd() + '/src/generateRandomSong');
 
 let originalUrl;
 
@@ -18,12 +17,12 @@ router.post('/', urlencodedParser, async (req, res, next) => {
             return;
         };   
 
-        let randomInt = generateRandomInRange(100, 0);
+        let randomSong = await getRandomSong();
 
-        let updateOp = await Redirect.updateOne({_id: randomInt}, {original_url: originalUrl}, {upsert:true});
+        let updateOp = await Redirect.updateOne({_id: randomSong}, {original_url: originalUrl}, {upsert:true});
         console.log(updateOp);
     
-        res.json({original_url: req.body.URL, short_url: randomInt});
+        res.json({original_url: req.body.URL, short_url: randomSongq});
 
     } catch (error) {
         console.log(error);
