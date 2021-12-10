@@ -11,6 +11,7 @@ var { Redirect } = require(process.cwd() + '/data/models/redirects');
 
 router.post('/', urlencodedParser, async (req, res, next) => {
     originalUrl = req.body.url;
+    console.log(originalUrl);
 
     try {
         if (!isValidUrl(originalUrl)) {
@@ -31,6 +32,7 @@ router.post('/', urlencodedParser, async (req, res, next) => {
 })
 
 router.get('/:shortUrl', async (req, res, next) => {
+    console.log(req.originalUrl);
     let songName = req.params.shortUrl;
     console.log(songName);
     let doc = await Redirect.findById(songName).lean();
