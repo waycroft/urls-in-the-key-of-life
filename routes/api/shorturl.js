@@ -22,7 +22,7 @@ router.post('/', urlencodedParser, async (req, res, next) => {
         let updateOp = await Redirect.updateOne({_id: randomSong}, {original_url: originalUrl}, {upsert:true});
         console.log(updateOp);
     
-        res.json({original_url: req.body.URL, short_url: randomSongq});
+        res.json({original_url: req.body.URL, short_url: randomSong});
 
     } catch (error) {
         console.log(error);
