@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser')
 var urlencodedParser = bodyParser.urlencoded({extended: false})
-var { isValidUrl, getRandomSong } = require(process.cwd() + '/src/generateRandomSong');
+var { getRandomSong } = require(process.cwd() + '/src/generateRandomSong');
+var { isValidUrl } = require(process.cwd() + '/src/validateUrl');
 
 let originalUrl;
 
@@ -13,8 +14,7 @@ router.post('/', urlencodedParser, async (req, res, next) => {
 
     try {
         if (!isValidUrl(originalUrl)) {
-            res.json({error: 'invalid url'}); 
-            return;
+            throw 'invalid url';
         };   
 
         let randomSong = await getRandomSong();
